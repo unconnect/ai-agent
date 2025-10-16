@@ -3,25 +3,24 @@ from dotenv import load_dotenv
 from google import genai
 import sys
 
-
-load_dotenv()
-api_key = os.environ.get("GEMINI_API_KEY")
-
-client = genai.Client(api_key=api_key)
-
-
 def main():
 
+    load_dotenv()
+    api_key = os.environ.get("GEMINI_API_KEY")
+    client = genai.Client(api_key=api_key)
+
     script_name = sys.argv[0]
+    # Args without script name
     args = sys.argv[1:]
 
-    # FIXME: Before commit make this more pythionic with "not" keyword. 
-    # FIXME: Give an example how to use the cli-tool
-    if(len(args) < 1):
-        raise SystemExit("Something went wrong! Please give at least one argument!")
+    if not args:
+        print("AI Code Agent 🤖")
+        print("Something went wrong! Please give at least one argument!")
+        print("\nUsage: $python main.py \"Your prompt goes here”")
+        return sys.exit(1)
     
-    # FIXME: Join possible multiple args when not encased in quotes to one arg.
-    prompt = args[0]
+    # Join arguments in case the user does not enclose prompt in quotes
+    prompt = " ".join(args)
 
     response = client.models.generate_content(model="gemini-2.0-flash-001", contents=prompt)
 
