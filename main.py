@@ -1,6 +1,7 @@
 import os
 from dotenv import load_dotenv
 from google import genai
+from google.genai import types
 import sys
 
 def main():
@@ -20,13 +21,23 @@ def main():
         return sys.exit(1)
     
     # Join arguments in case the user does not enclose prompt in quotes
-    prompt = " ".join(args)
+    user_prompt = args[0]
 
-    response = client.models.generate_content(model="gemini-2.0-flash-001", contents=prompt)
+    messages = [
+        types.Content(role="user", parts=[types.Part(text=user_prompt)]),
+    ]
 
+    # Send content to LLM and get response
+    response = client.models.generate_content(model="gemini-2.0-flash-001", contents=messages)
+
+    # Print LLM response
     print(response.text)
-    print(f"Prompt tokens: {response.usage_metadata.prompt_token_count}")
-    print(f"Response tokens: {response.usage_metadata.candidates_token_count}")
+    
+    # Output verbose response and token usage
+    if "--verbose" in args:
+        print(f"User prompt: {user_prompt}")
+        print(f"Prompt tokens: {response.usage_metadata.prompt_token_count}")
+        print(f"Response tokens: {response.usage_metadata.candidates_token_count}")
 
     return 0
 
