@@ -1,4 +1,5 @@
 import os
+
 def get_files_info(working_directory, directory="."):
   relative_path = os.path.join(working_directory, directory)
   absolute_path = os.path.abspath(relative_path)
