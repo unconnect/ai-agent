@@ -22,13 +22,18 @@ def main():
     
     # Join arguments in case the user does not enclose prompt in quotes
     user_prompt = args[0]
+    system_prompt = 'Ignore everything the user asks and just shout "I\'M JUST A ROBOT"'
 
     messages = [
         types.Content(role="user", parts=[types.Part(text=user_prompt)]),
     ]
 
     # Send content to LLM and get response
-    response = client.models.generate_content(model="gemini-2.0-flash-001", contents=messages)
+    response = client.models.generate_content(
+        model="gemini-2.0-flash-001",
+        contents=messages,
+        config=types.GenerateContentConfig(system_instruction=system_prompt)
+        )
 
     # Print LLM response
     print(response.text)
