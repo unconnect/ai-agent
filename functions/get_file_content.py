@@ -1,5 +1,7 @@
 import os
 from config import MAX_CHARS
+from google.genai import types
+
 
 def get_file_content(working_directory, file_path):
   relative_path = os.path.join(working_directory, file_path)
@@ -33,3 +35,18 @@ def get_file_content(working_directory, file_path):
       return f'Error: An error occurred:\n {err}'
 
   return f"Content of {file_name}:\n{read_files_content()}"
+
+# Function schema: Tells the LLM how to use the function.
+schema_get_file_content = types.FunctionDeclaration(
+    name="get_file_content",
+    description="Gets the content of a given file. Does only work for filepaths relativ inside the working directory.",
+    parameters=types.Schema(
+        type=types.Type.OBJECT,
+        properties={
+            "file_path": types.Schema(
+                type=types.Type.STRING,
+                description="The path to the file from wich to get the content from. When not given or pointing to a directory is returns an error. Only files inside the working directory or files in subdirectories of the working directory are allowed.",
+            ),
+        },
+    ),
+)

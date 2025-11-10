@@ -1,4 +1,6 @@
 import os
+from google.genai import types
+
 
 def write_file(working_directory, file_path, content):
   relative_path = os.path.join(working_directory, file_path)
@@ -33,3 +35,22 @@ def write_file(working_directory, file_path, content):
 
   except (OSError, TypeError, ValueError) as err:
     return f'Error: An error occurred:\n {err}'
+  
+# Function schema: Tells the LLM how to use the function.
+schema_write_file = types.FunctionDeclaration(
+    name="write_file",
+    description="Writes to a given file path. In case the file does not exists the file is created. In case the files already exists the content will be overwritten.",
+    parameters=types.Schema(
+        type=types.Type.OBJECT,
+        properties={
+            "file_path": types.Schema(
+                type=types.Type.STRING,
+                description="The path to the file that should be written or created. Must be within the path of the working directory. ",
+            ),
+            "content": types.Schema(
+              type=types.Type.STRING,
+              description="The content to write to the file."
+            )
+        },
+    ),
+)
